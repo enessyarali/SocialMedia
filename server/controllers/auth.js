@@ -3,7 +3,7 @@ import  jwt  from "jsonwebtoken";
 import User from "../models/User.js"
 
 //REGISTER USER 
-export const registerUser = async (req, res) => {
+export const register = async (req, res) => {
     try {
         const {
             firstName,
@@ -32,7 +32,22 @@ export const registerUser = async (req, res) => {
         const savedUser = await newUser.save();
         res.status(201).json(savedUser);
     } catch (error) {
-        console.log(err);
+              res.status(500).json("erorr: " + err.message);
+    }
+}
+
+//LOGGING IN 
+export const login =  async (req, res) => {
+    try {
+        const {email, password} = req.body;
+        const user = await  User.findOne({ email: email});
+        if(!user) return res.status(400).json({msg : "user doesnt exist"});
+        const isMatch = await bcrypt.compare(password, user.password)
+        if(!isMatch) return res.status(400).json({msg : "indvalid credentials"});
+        const token = jwt.sign({id: user._id} , process.env.JWT_SECRET);
+        delete user.password;//to make sure the password is not sent back 
+        res.status(200).json({token , user})
+    } catch (error) {
         res.status(500).json("erorr: " + err.message);
     }
 }
