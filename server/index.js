@@ -10,7 +10,6 @@ import path from "path";
 import authRoutes from "./routes/auth.js"
 import userRoutes from "./routes/users.js"
 import postRoutes from "./routes/posts.js"
-import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { fileURLToPath } from "url";
 import { verifyToken } from "./middleware/auth.js";
@@ -29,7 +28,7 @@ app.use(bodyParser.urlencoded({limit:"30mb",extended : true  }))
 app.use(cors())
 app.use("/assets" , express.static(path.join(__dirname , 'public/assets')))
 import {register} from "./controllers/auth.js"
-import { verifyToken } from "./middleware/auth.js";
+
 
 //File Storage and upload 
 const storage =  multer.diskStorage({
