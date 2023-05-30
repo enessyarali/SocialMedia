@@ -7,28 +7,28 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { EditOutlinedIcon } from "@mui/icons-material/EditOffOutlined";
+import { EditOutlined } from "@mui/icons-material";
 import { Formik } from "formik"; //Form Library
 import * as yup from "yup"; //Validation Library
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
 import Dropzone from "react-dropzone";
-import FlexBetween from "components/flexBetween";
+import FlexBetween from "components/FlexBetween";
 
-const registerSchema = yup.object.shape({
-  firstName: yup.string.reqired("required"),
-  lastName: yup.string.reqired("required"),
-  email: yup.string.email().reqired("required"),
-  password: yup.string.reqired("required"),
-  location: yup.string.reqired("required"),
-  occupation: yup.string.reqired("required"),
-  picture: yup.string.reqired("required"),
+const registerSchema = yup.object().shape({
+  firstName: yup.string().required("required"),
+  lastName: yup.string().required("required"),
+  email: yup.string().email().required("required"),
+  password: yup.string().required("required"),
+  location: yup.string().required("required"),
+  occupation: yup.string().required("required"),
+  picture: yup.string().required("required"),
 });
 
-const loginSchema = yup.object.shape({
-  email: yup.string.email().reqired("required"),
-  password: "",
+const loginSchema = yup.object().shape({
+  email: yup.string().email().required("required"),
+  password: yup.string().required("required"),
 });
 
 const initialValuesRegister = {
@@ -55,53 +55,52 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register"; //Always try to name Boolean values with "is"
 
-  const register = async (values , onSubmitProps ) => {
+  const register = async (values, onSubmitProps) => {
     //This allows us to send form with image
-    
-    const formData = new FormData()
-    for(let value in values){
-      formData.append(value , values[value]);
+    const formData = new FormData();
+    for (let value in values) {
+      formData.append(value, values[value]);
     }
-    formData = FormData("picturePath" , values.picture.name);
+    formData.append("picturePath", values.picture.name);
 
     const savedUserResponse = await fetch(
-      "https://localhost:3001/auth/register",
+      "http://localhost:3001/auth/register",
       {
-        method : "POST",
-        body : formData,
-      })
-      const savedUser = await savedUserResponse.json();
-      onSubmitProps.resetForm();
-
-      if(savedUser){
-        setPageType("login")
+        method: "POST",
+        body: formData,
       }
-  }
+    );
+    const savedUser = await savedUserResponse.json();
+    onSubmitProps.resetForm();
 
-  const login = async (values ,onSubmitProps) => {
-    const loggedInResponse = await fetch(
-      "https://localhost:3001/auth/login",
-      {
-        method : "POST",
-        headers : {"Content-Type" : "application/json"},
-        body : JSON.stringify(values),
-      })
-      const loggedIn = await loggedInResponse.json();
-      onSubmitProps.resetForm();
+    if (savedUser) {
+      setPageType("login");
+    }
+  };
 
-      if(loggedIn){
-        dispatch(setLogin({
-          user : loggedIn.user,
-          token : loggedIn.token
-        }))
-        navigate("/home");
-      }
-      
-  }
+  const login = async (values, onSubmitProps) => {
+    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+    const loggedIn = await loggedInResponse.json();
+    onSubmitProps.resetForm();
+
+    if (loggedIn) {
+      dispatch(
+        setLogin({
+          user: loggedIn.user,
+          token: loggedIn.token,
+        })
+      );
+      navigate("/home");
+    }
+  };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isLogin) await login(values, onSubmitProps)
-    if (isRegister) await register(values , onSubmitProps)
+    if (isLogin) await login(values, onSubmitProps);
+    if (isRegister) await register(values, onSubmitProps);
   };
 
   return (
@@ -135,7 +134,8 @@ const Form = () => {
                 <TextField
                   label="First Name"
                   onBlur={handleBlur}
-                  onChange={values.firstName}
+                  onChange={handleChange}
+                  value={values.firstName}
                   name="firstName"
                   error={
                     Boolean(touched.firstName) && Boolean(errors.firstName)
@@ -146,7 +146,8 @@ const Form = () => {
                 <TextField
                   label="Last Name"
                   onBlur={handleBlur}
-                  onChange={values.lastName}
+                  onChange={handleChange}
+                  value={values.lastName}
                   name="lastName"
                   error={Boolean(touched.lastName) && Boolean(errors.lastName)}
                   helperText={touched.lastName && errors.lastName}
@@ -155,7 +156,8 @@ const Form = () => {
                 <TextField
                   label="Location"
                   onBlur={handleBlur}
-                  onChange={values.location}
+                  onChange={handleChange}
+                  value={values.location}
                   name="location"
                   error={Boolean(touched.location) && Boolean(errors.location)}
                   helperText={touched.location && errors.location}
@@ -164,7 +166,8 @@ const Form = () => {
                 <TextField
                   label="Occupation"
                   onBlur={handleBlur}
-                  onChange={values.occupation}
+                  onChange={handleChange}
+                  value={values.occupation}
                   name="occupation"
                   error={
                     Boolean(touched.occupation) && Boolean(errors.occupation)
@@ -198,7 +201,7 @@ const Form = () => {
                         ) : (
                           <FlexBetween>
                             <Typography>{values.picture.name}</Typography>
-                            <EditOutlinedIcon />
+                            <EditOutlined />
                           </FlexBetween>
                         )}
                       </Box>
@@ -210,7 +213,8 @@ const Form = () => {
             <TextField
               label="Email"
               onBlur={handleBlur}
-              onChange={values.email}
+              onChange={handleChange}
+              value={values.email}
               name="email"
               error={Boolean(touched.email) && Boolean(errors.email)}
               helperText={touched.email && errors.email}
@@ -220,7 +224,8 @@ const Form = () => {
               label="Password"
               onBlur={handleBlur}
               type="password"
-              onChange={values.password}
+              onChange={handleChange}
+              value={values.password}
               name="password"
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
@@ -230,32 +235,35 @@ const Form = () => {
           {/* BUTTONS */}
           <Box>
             <Button
-            fullWidth
-            type="Submit"
-            sx = {{
-              m : "2rem 0",
-              p : "1rem" , 
-              backgroundColor : palette.primary.main,
-              color : palette.background.alt,
-              "& hover" : {color : palette.primary.main},
-            }}
+              fullWidth
+              type="Submit"
+              sx={{
+                m: "2rem 0",
+                p: "1rem",
+                backgroundColor: palette.primary.main,
+                color: palette.background.alt,
+                "& hover": { color: palette.primary.main },
+              }}
             >
               {isLogin ? "LOGIN" : "REGISTER"}
             </Button>
             <Typography
-            onClick={() => {
-              setPageType(isLogin ? "register" : "login") ;
-              resetForm()}}
+              onClick={() => {
+                setPageType(isLogin ? "register" : "login");
+                resetForm();
+              }}
               sx={{
-                textDecoration : "underline",
-                color : palette.primary.main,
-                "&hover" : {
-                  cursor : "pointer",
-                  color : palette.primary.light
-                }
+                textDecoration: "underline",
+                color: palette.primary.main,
+                "&hover": {
+                  cursor: "pointer",
+                  color: palette.primary.light,
+                },
               }}
             >
-            {isLogin ? "Don't have an account ? Sign Up Here" :  "Already have an account ? Log in Here"}
+              {isLogin
+                ? "Don't have an account ? Sign Up Here"
+                : "Already have an account ? Log in Here"}
             </Typography>
           </Box>
         </form>

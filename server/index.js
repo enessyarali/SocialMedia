@@ -13,6 +13,7 @@ import postRoutes from "./routes/posts.js"
 import { createPost } from "./controllers/posts.js";
 import { fileURLToPath } from "url";
 import { verifyToken } from "./middleware/auth.js";
+import {register} from "./controllers/auth.js"
 
 // Configuration and middlewares
 const __filename = fileURLToPath(import.meta.url); //is used to obtain the file path of the current module in Node.js.
@@ -27,7 +28,6 @@ app.use(bodyParser.json({limit:"30mb",extended : true  }));
 app.use(bodyParser.urlencoded({limit:"30mb",extended : true  }))
 app.use(cors())
 app.use("/assets" , express.static(path.join(__dirname , 'public/assets')))
-import {register} from "./controllers/auth.js"
 
 
 //File Storage and upload 
@@ -42,7 +42,7 @@ const storage =  multer.diskStorage({
 const upload = multer({storage});
 
 // ROUTES WITH FILES
-app.post("/auth/resgister" , upload.single("picture"),verifyToken , register) 
+app.post("/auth/register" , upload.single("picture") , register) 
  // It shoudld be like this in the full version 
 //app.post("/auth/resgister" , upload.single("picture"),verifyToken , register)
 //I am just not adding it because it is not complete.
