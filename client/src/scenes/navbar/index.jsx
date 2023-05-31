@@ -87,7 +87,7 @@ const Navbar = () => {
           <Message sx={{ fontSize: "25px" }} />
           <Notifications sx={{ fontSize: "25px" }} />
           <Help sx={{ fontSize: "25px" }} />
-          <FormControl variant="standart" value={fullName}>
+          <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
               sx={{
@@ -143,8 +143,9 @@ const Navbar = () => {
           {/* MENU ITEMS */}
           <FlexBetween
             display="flex"
-            flexDireciton="column"
+            flexDirection="column"
             justifyContent="center"
+            alignItems="center"
             gap="3rem"
           >
             <IconButton onClick={() => dispatch(setMode())} sx={{ fontSize: "25px" }}>
@@ -157,7 +158,7 @@ const Navbar = () => {
             <Message sx={{ fontSize: "25px" }} />
             <Notifications sx={{ fontSize: "25px" }} />
             <Help sx={{ fontSize: "25px" }} />
-            <FormControl variant="standart" value={fullName}>
+            <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}
                 sx={{

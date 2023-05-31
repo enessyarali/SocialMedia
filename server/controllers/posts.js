@@ -30,6 +30,7 @@ export const createPost = async (req, res) => {
 export const getFeedPosts = async (req, res) => {
     try {
         const post = await Post.find(); 
+        console.log(post);
         res.status(200).json(post)
     } catch (error) {
         res.status(404).json({error : error.message})
@@ -39,7 +40,8 @@ export const getFeedPosts = async (req, res) => {
 export const getUserPosts = async (req , res) =>{
     try {
         const { userId } = req.params;
-        const posts = await Post.find({userId}); 
+        const posts = await Post.find({userId});
+        console.log(posts); 
         res.status(200).json(posts)
     } catch (error) {
         res.status(404).json({error : error.message})
